@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-
+import pandas as pd
 
 def create_date_range(start_date, end_date, delta=timedelta(hours=1)):
     current_date = start_date
@@ -35,5 +35,31 @@ if missing_files:
     for file_name in missing_files:
         print(file_name)
 else:
-    print("没有文件缺失。")
+    print("没有文件缺失，开始合并文件。")
+
+    # 确定合并后文件的名称
+    output_file = "merged_data.csv"
+
+    # 获取data_unzip目录下所有的csv文件
+    csv_files = [file for file in os.listdir('data_unzip') if file.endswith('.csv')]
+
+    # 按文件名排序，确保数据顺序正确
+    csv_files.sort()
+
+    # 创建一个空的DataFrame来追加数据
+    merged_df = pd.DataFrame()
+
+    # 遍历并追加数据
+    for file in csv_files:
+        file_path = os.path.join('data_unzip', file)
+        print(f"正在读取文件 {file_path}...")
+        # 读取CSV文件
+        df = pd.read_csv(file_path)
+        # 追加到合并的DataFrame
+        merged_df = pd.concat([merged_df, df])
+
+    # 保存到新的CSV文件
+    merged_df.to_csv(output_file, index=False)
+    print(f"所有数据已合并到文件 {output_file}。")
+
 
