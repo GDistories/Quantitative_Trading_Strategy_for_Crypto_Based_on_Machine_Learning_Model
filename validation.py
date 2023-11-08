@@ -37,6 +37,12 @@ if missing_files:
 else:
     print("没有文件缺失，开始合并文件。")
 
+    column_names = [
+        '开盘时间', '开盘价', '最高价', '最低价', '收盘价',
+        '成交量', '收盘时间', '成交额', '成交笔数',
+        '主动买入成交量', '主动买入成交额', '忽略该参数'
+    ]
+
     # 确定合并后文件的名称
     output_file = "merged_data.csv"
 
@@ -54,9 +60,9 @@ else:
         file_path = os.path.join('data_unzip', file)
         print(f"正在读取文件 {file_path}...")
         # 读取CSV文件
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, header=None, names=column_names)
         # 追加到合并的DataFrame
-        merged_df = pd.concat([merged_df, df])
+        merged_df = pd.concat([merged_df, df], ignore_index=True)
 
     # 保存到新的CSV文件
     merged_df.to_csv(output_file, index=False)
